@@ -1,53 +1,45 @@
-class Artist
+class Artist 
+  extend Concerns::Findable
+  
+  attr_accessor :name 
 
-  attr_accessor :name
-  attr_reader :song, :genre
   @@all = []
-
+  
   def initialize(name)
-    @name = name
+    @name = name 
     @songs = []
-    @genres = []
-  end
-
-  def self.all
-    @@all
-  end
-
-  def self.destroy_all
-    @@all = []
-  end
-
-  def save
+  end 
+  
+  def self.all 
+    @@all 
+  end 
+  
+  def self.destroy_all 
+    @@all.clear 
+  end 
+  
+  def save 
     @@all << self
-  end
-
+    self 
+  end 
+  
   def self.create(name)
-    artist = self.new(name)
-    @@all << artist
-    artist
-  end
-
+    self.new(name).save
+  end 
+  
   def songs
-    @songs
-  end
-
-  def genres
-    genres = @songs.collect do |song|
-        song.genre
-      end
-      genres.uniq
-  end
-
-
+    @songs 
+  end 
+  
   def add_song(song)
-     if !song.artist
-       song.artist = self
-     end
-     if !@songs.detect {|songs| songs.name == song.name }
-       @songs << song
-     end
-   end
-
-
-end
+    song.artist = self unless song.artist == self 
+    # assigns itself unless it is already within the array.. equals itself 
+    @songs << song unless @songs.include?(song)
+    #add song to array unless within songs array song is included 
+  end 
+  
+  def genres
+    self.songs.collect {|song| song.genre}.uniq
+    # collecting a new array of the diff. genres of this artist through songs 
+  end 
+end 
